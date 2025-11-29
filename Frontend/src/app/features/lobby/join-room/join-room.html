@@ -1,0 +1,131 @@
+<div
+    class="min-h-screen bg-gradient-to-br from-gray-900 via-green-900 to-emerald-900 text-white flex flex-col items-center justify-center p-6 relative overflow-hidden">
+
+    <!-- Animated Background Elements -->
+    <div class="absolute inset-0 overflow-hidden">
+        <!-- Animated Orbs -->
+        <div
+            class="absolute -top-40 -right-40 w-80 h-80 bg-green-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse-slow">
+        </div>
+        <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-emerald-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse-slow"
+            style="animation-delay: 2s;"></div>
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-teal-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-pulse-slow"
+            style="animation-delay: 4s;"></div>
+
+        <!-- Floating Room Codes -->
+        @for(code of floatingCodes; track code.value) {
+        <div class="absolute text-2xl font-mono text-white opacity-5 animate-float" [style.left]="code.left"
+            [style.top]="code.top" [style.animation-delay]="code.delay">
+            {{ code.value }}
+        </div>
+        }
+
+        <!-- Connection Lines Animation -->
+        <div class="absolute inset-0 opacity-10">
+            <div class="connection-line line-1"></div>
+            <div class="connection-line line-2"></div>
+            <div class="connection-line line-3"></div>
+        </div>
+    </div>
+
+    <!-- Main Content Card -->
+    <div
+        class="max-w-md w-full mx-auto bg-gray-800/80 backdrop-blur-lg rounded-2xl shadow-2xl p-8 transform transition-all duration-500 hover:shadow-3xl relative z-10 join-room-card">
+
+        <!-- Header Section -->
+        <div class="text-center mb-8">
+            <div
+                class="w-20 h-20 bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl mx-auto mb-4 flex items-center justify-center transform transition-transform duration-300 hover:scale-110 hover:rotate-3">
+                <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                </svg>
+            </div>
+            <h2
+                class="text-4xl font-bold mb-2 bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent slide-in-top">
+                Join Room</h2>
+            <p class="text-gray-300 fade-in">Enter room code to join the party</p>
+        </div>
+
+        <!-- Room Code Input -->
+        <div class="mb-6 input-container">
+            <label class="block text-sm font-medium text-gray-300 mb-3 text-center">
+                <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                </svg>
+                Room Code
+            </label>
+            <input [(ngModel)]="roomCode" maxlength="6" (input)="onCodeInput($event)" (keyup.enter)="join()"
+                class="room-code-input" placeholder="ABCDEF" autocomplete="off" autocapitalize="characters" />
+            <div class="text-xs text-gray-400 text-center mt-2">
+                Enter 6-character room code
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="space-y-4 action-buttons-container">
+            <!-- Join Room Button -->
+            <button (click)="join()" class="action-btn join-btn w-full" [class.loading]="isJoining"
+                [disabled]="isJoining || !isValidCode">
+
+                @if(isJoining) {
+                <div class="loading-spinner"></div>
+                } @else {
+                <span class="flex items-center justify-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                    Join Room
+                </span>
+                }
+            </button>
+
+            <!-- Home Button -->
+            <button (click)="navigateToHome()" class="action-btn home-btn w-full">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+                Back to Home
+            </button>
+        </div>
+
+        <!-- Status Messages -->
+        @if(statusMessage) {
+        <div class="status-message mt-4" [class.success]="statusType === 'success'"
+            [class.error]="statusType === 'error'">
+            {{ statusMessage }}
+        </div>
+        }
+
+        <!-- Room Code Preview -->
+        @if(roomCode) {
+        <div class="mt-6 text-center">
+            <div class="text-sm text-gray-400 mb-2">You're joining:</div>
+            <div class="room-code-preview animate-pulse">
+                {{ roomCode.toUpperCase() }}
+            </div>
+        </div>
+        }
+
+    </div>
+
+    <!-- Background Pattern -->
+    <div class="absolute inset-0 opacity-10">
+        <div class="absolute inset-0 background-pattern"></div>
+    </div>
+
+    <!-- Connection Animation -->
+    @if(isJoining) {
+    <div class="absolute inset-0 flex items-center justify-center z-20">
+        <div class="connection-animation">
+            <div class="connection-dot dot-1"></div>
+            <div class="connection-dot dot-2"></div>
+            <div class="connection-dot dot-3"></div>
+            <div class="text-white text-sm mt-4">Connecting to room...</div>
+        </div>
+    </div>
+    }
+</div>

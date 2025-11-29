@@ -1,0 +1,11 @@
+<div class="flex flex-col items-center justify-center h-screen bg-black text-white">
+    <h1 class="text-4xl font-bold mb-6">Impostor Revealed!</h1>
+
+    <div class="text-5xl text-red-400 mb-10 animate-pulse">
+        {{ impostorName }}
+    </div>
+
+    <button (click)="next()" class="px-6 py-3 bg-blue-600 rounded-lg text-xl">
+        Continue
+    </button>
+</div>

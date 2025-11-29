@@ -1,0 +1,11 @@
+<div class="p-8 text-center">
+    <h1 class="text-3xl font-bold mb-4">Round {{ round() }}</h1>
+
+    <div class="text-6xl font-mono mb-8">
+        {{ timeLeft() }}s
+    </div>
+
+    <button (click)="goToVote()" class="px-6 py-3 bg-blue-600 text-white rounded-xl">
+        Go to Voting Early
+    </button>
+</div>
